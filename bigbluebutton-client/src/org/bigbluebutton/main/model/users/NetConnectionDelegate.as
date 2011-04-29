@@ -101,7 +101,7 @@ package org.bigbluebutton.main.model.users
 					_conferenceParameters.conference + "," + _conferenceParameters.mode + "," + _conferenceParameters.room + "]");	
 				_netConnection.connect(uri, _conferenceParameters.username, _conferenceParameters.role, _conferenceParameters.conference, 
 											_conferenceParameters.mode, _conferenceParameters.room, _conferenceParameters.voicebridge, 
-											false, _conferenceParameters.externUserID);			
+											false, _conferenceParameters.externUserID, _conferenceParameters.startupMode);			
 				
 			} catch( e : ArgumentError ) {
 				// Invalid parameters.
@@ -268,6 +268,11 @@ package org.bigbluebutton.main.model.users
 			});
 			retryTimer.start();
 			if (this.backoff < 16000) this.backoff = backoff *2;
+		}
+		
+		//Set the parameter for startedModules
+		public function setStartedModules(startedModules:String):void{
+			_conferenceParameters.startedModules = startedModules;
 		}
 	}
 }

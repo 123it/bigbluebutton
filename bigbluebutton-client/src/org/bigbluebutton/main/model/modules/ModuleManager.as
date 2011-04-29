@@ -153,7 +153,7 @@ package org.bigbluebutton.main.model.modules
 			if (allModulesLoaded())
 			{
 				sendAppAndLocaleVersions();
-				if (conferenceParameters.conferenceName == "Demo Meeting")
+				if (conferenceParameters.startupMode == "demo")
 					startAllModules();
 				else
 					startRequiredModules();
@@ -200,7 +200,7 @@ package org.bigbluebutton.main.model.modules
 		
 		public function startRequiredModules():void
 		{
-			var modules:String = conferenceParameters.loadedModules;
+			var modules:String = conferenceParameters.startedModules;
 			
 			for (var i:int = 0; i<sorted.length; i++)
 			{
@@ -228,7 +228,7 @@ package org.bigbluebutton.main.model.modules
 		
 		public function stopNotRequiredModules():void
 		{
-			var modules:String = conferenceParameters.loadedModules;
+			var modules:String = conferenceParameters.startedModules;
 			
 			for (var i:int = 0; i<sorted.length; i++){
 				var m:ModuleDescriptor = sorted.getItemAt(i) as ModuleDescriptor;

@@ -102,6 +102,8 @@ class ApiController {
 		String welcomeMessage = params.welcome
 		String dialNumber = params.dialNumber
 		String logoutUrl = params.logoutURL
+		String startupMode = params.startupMode
+		if (startupMode == null) startupMode = "demo"
 		
 		Integer maxParts = -1;
 		try {
@@ -130,7 +132,8 @@ class ApiController {
 		if (StringUtils.isEmpty(modPW)) {
 			modPW = RandomStringUtils.randomAlphanumeric(8);
 		}
-		DynamicConference conf = new DynamicConference(name, mtgID, attPW, modPW, maxParts)
+		DynamicConference conf = new DynamicConference(name, mtgID, attPW, modPW, maxParts, startupMode)
+		//DynamicConference conf = new DynamicConference(name, mtgID, attPW, modPW, maxParts)
 		conf.setVoiceBridge(voiceBr == null || voiceBr == "" ? mtgID : voiceBr)
 		
 		if ((dynamicConferenceService.testVoiceBridge != null) && (conf.voiceBridge == dynamicConferenceService.testVoiceBridge)) {
@@ -184,6 +187,7 @@ class ApiController {
 
 	def join = {
 			
+		println "JFEDERIC***JFEDERIC***JFEDERIC***JFEDERIC"
 		println "Entered Join"
 		log.debug CONTROLLER_NAME + "#join"
 
@@ -244,6 +248,7 @@ class ApiController {
 		session["mode"] = "LIVE"
 		session["record"] = false
 		session['welcome'] = conf.welcome
+		session["startupMode"] = conf.startupMode
 		
 		session.setMaxInactiveInterval(SESSION_TIMEOUT);
 		
@@ -466,7 +471,8 @@ class ApiController {
 	}
 
 	def enter = {
-		
+
+		println "JFEDERIC***JFEDERIC***JFEDERIC***JFEDERIC"
 		println "Entered Enter"
 		
 		def fname = session["fullname"]
@@ -481,6 +487,7 @@ class ApiController {
 	    def welcomeMsg = session['welcome']
 	    def meetID = session["meetingID"] 
         def externUID = session["externUserID"] 
+        def stpMode = session["startupMode"]
         
         println "After reading from cookie"
         
@@ -518,8 +525,9 @@ class ApiController {
 	        				mode("$md")
 	        				record("$rec")
 	        				welcome("$welcomeMsg")
+	        				startupMode("$stpMode")
 						//Call for loading the default modules for the API mode!
-	        				loadedModules("ListenersModule,VideoconfModule,PhoneModule,ViewersModule")
+	        				//loadedModules("ListenersModule,VideoconfModule,PhoneModule,ViewersModule")
 						}
 					}
 				}

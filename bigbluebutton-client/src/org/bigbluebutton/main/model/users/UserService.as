@@ -89,7 +89,7 @@ package org.bigbluebutton.main.model.users
 				_conferenceParameters.welcome = result.welcome;
 				_conferenceParameters.meetingID = result.meetingID;
 				_conferenceParameters.externUserID = result.externUserID;
-				_conferenceParameters.loadedModules = result.loadedModules;
+				_conferenceParameters.startupMode = result.startupMode;
 				
 				var e:ConferenceCreatedEvent = new ConferenceCreatedEvent(ConferenceCreatedEvent.CONFERENCE_CREATED_EVENT);
 				e.conference = _conference;

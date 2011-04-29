@@ -24,6 +24,9 @@ import org.red5.logging.Red5LoggerFactory;
 import net.jcip.annotations.ThreadSafe;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * This encapsulates access to Room and Participant. This class must be threadsafe.
@@ -33,11 +36,13 @@ public class RoomsManager {
 	private static Logger log = Red5LoggerFactory.getLogger(RoomsManager.class, "bigbluebutton");
 	
 	private final Map <String, Room> rooms;
+	private final Map <String, List<String> > startedModules;
 
 	private IConferenceEventListener conferenceEventListener;
 	
 	public RoomsManager() {
 		rooms = new ConcurrentHashMap<String, Room>();
+		startedModules = new ConcurrentHashMap<String, List<String>>();
 	}
 	
 	public void addRoom(final Room room) {
@@ -49,9 +54,17 @@ public class RoomsManager {
 			log.debug("Notified event listener of conference start");
 		}
 		rooms.put(room.getName(), room);
+		//Assign list to startedModules
+		startedModules.put(room.getName(), setDefaultModulesToStart() );
+		log.debug("New sessions will start with " + getStartedModules(room.getName()).toString() );
+		
 	}
 	
 	public void removeRoom(String name) {
+		//Remove the modules that were loaded
+		startedModules.get(name).clear();
+		startedModules.remove(name);	
+
 		log.debug("Remove room {}", name);
 		Room room = rooms.remove(name);
 		if (checkEvtListener() && room != null) {
@@ -189,25 +202,200 @@ public class RoomsManager {
 	public void moduleCommand(String cmd)
 	{		
 		log.debug("module Command: " + cmd);
+
+	//Parser begins 
 		int pos = cmd.indexOf("\t");
 		if(pos < 0)
 		{
 			log.error("Incorrect format of moduleCommand " + cmd);
 			return;
 		}		
-		
 		String room = cmd.substring(0, pos);
-		//Extract the API command (i.e. start, stop, or init)
- 		String realCmd = cmd.substring(pos+1);
-		
+		//Extract the API command (i.e. start, stop, or init) 
+ 		cmd = cmd.substring(pos+1);
+ 		pos = cmd.indexOf("\t");
+ 		
+ 		String module = cmd.substring(0, pos);
+ 		cmd = cmd.substring(pos+1);
+ 	//Parser ends
+ 		
 		Room r = getRoom(room);
 		if (r == null)
 		{
 			log.error("Could not find room::Room " + room + " does not exist");
 			return;
 		}
-		
-		log.debug("sending Command to room: " + realCmd);
-		r.sendModuleCommand(realCmd);		
+
+		setStartedModules(module, cmd, room);
+		log.debug("Sending Command to room: " + module + "\t" + cmd );
+		r.sendModuleCommand(module + "\t" + cmd);		
+	}
+
+	/*****************************************************************************
+    ;  setStartedModules
+    ;----------------------------------------------------------------------------
+    ; DESCRIPTION
+    ;   Adds or removes modules operated by the "moduleCommand" method to/from startedModules 
+    ;
+    ; RETURNS : N/A
+    ;
+    ; INTERFACE NOTES
+    ;   INPUT 
+    ;   
+    ; IMPLEMENTATION
+    ;  
+    ; HISTORY
+    ; __date__ :        PTS:            Description
+    ; MAR-11-2011  	JFederic		First version to fix persistence in api moduleCmd calls. 
+    ;								It doesn't include implementation for init_video/init_audio nor wildcard "All"
+    ; MAR-19-2011	JFederic		Addition to include All module and init_video/inot_audio commands                       
+    ******************************************************************************/	
+	private void setStartedModules(String module, String cmd, String room)
+	{
+		List<String> list;
+
+		if ( cmd.equalsIgnoreCase("start") )
+		{
+			if ( module.equalsIgnoreCase("all") )
+			{
+				startedModules.remove(room);
+				startedModules.put(room, setAllModulesToStart());
+			}  
+			else 
+			{
+				if ( !startedModules.containsKey(room) )
+				{   list = new ArrayList<String>();
+					list.add(module);
+					startedModules.put(room, list );
+				}
+				else
+				{
+					list = startedModules.get(room);
+					if ( !list.contains(module) )
+						list.add(module);
+				}
+			}
+		}
+		else if ( cmd.equalsIgnoreCase("stop") )
+		{
+			if ( module.equalsIgnoreCase("all") )
+			{
+				startedModules.remove(room);
+				startedModules.put(room, setDefaultModulesToStart());
+			}  
+			else 
+				if ( startedModules.containsKey(room) )
+				{
+					list = startedModules.get(room);
+					list.remove(module);
+				}
+		} // if init_video or init_audio nothing happen
+	}	
+
+	/*****************************************************************************
+    ;  getStartedModules
+    ;----------------------------------------------------------------------------
+    ; DESCRIPTION
+    ;   get implementation for private variable startedModules 
+    ;
+    ; RETURNS : N/A
+    ;
+    ; INTERFACE NOTES
+    ;   INPUT 
+    ;   
+    ; IMPLEMENTATION
+    ;  
+    ; HISTORY
+    ; __date__ :        PTS:            Description
+    ; MAR-11-2011                        
+    ******************************************************************************/	
+	public List<String> getStartedModules(String room)
+	{
+		return startedModules.get(room);
+	}
+
+	/*****************************************************************************
+    ;  setDefaultModulesToStart
+    ;----------------------------------------------------------------------------
+    ; DESCRIPTION
+    ;   implementation for setting the private variable startedModules with minimum modules 
+    ;
+    ; RETURNS : N/A
+    ;
+    ; INTERFACE NOTES
+    ;   INPUT 
+    ;   
+    ; IMPLEMENTATION
+    ;  
+    ; HISTORY
+    ; __date__ :        PTS:            Description
+    ; MAR-11-2011	JFederic		First version.
+    ; MAR-19-2011	JFederic		Refactory for (setDefaultstartedModules) to be consistent with the new call method
+    ;								Still in hardcode that could be implemented with a call to a properties file.
+    ;								"ListenersModule,VideoconfModule,PhoneModule,ViewersModule,DeskShareModule" are mandatory                        
+    ******************************************************************************/	
+	private List<String> setDefaultModulesToStart()
+	{
+		return modulesToStart("ListenersModule,VideoconfModule,PhoneModule,ViewersModule,DeskShareModule");
+	}
+
+	/*****************************************************************************
+    ;  setAllModulesToStart
+    ;----------------------------------------------------------------------------
+    ; DESCRIPTION
+    ;   implementation for setting the private variable startedModules with all the  modules 
+    ;
+    ; RETURNS : N/A
+    ;
+    ; INTERFACE NOTES
+    ;   INPUT 
+    ;   
+    ; IMPLEMENTATION
+    ;  
+    ; HISTORY
+    ; __date__ :        PTS:            Description
+    ; MAR-19-2011	JFederic		First version. Hardcode that could be implemented with a call to a properties file.
+    ;								"ListenersModule,ViewersModule,DeskShareModule,PresentModule,VideoconfModule,PhoneModule,ChatModule,WhiteboardModule"                        
+    ******************************************************************************/	
+	private List<String> setAllModulesToStart()
+	{
+		return modulesToStart("ListenersModule,ViewersModule,DeskShareModule,PresentModule,VideoconfModule,PhoneModule,ChatModule,WhiteboardModule");
+	}
+
+	/*****************************************************************************
+    ;  modulesToStart
+    ;----------------------------------------------------------------------------
+    ; DESCRIPTION
+    ;   implementation for parsing String and generate a List of modules 
+    ;
+    ; RETURNS : N/A
+    ;
+    ; INTERFACE NOTES
+    ;   INPUT 
+    ;   
+    ; IMPLEMENTATION
+    ;  
+    ; HISTORY
+    ; __date__ :        PTS:            Description
+    ; MAR-19-2011	JFederic		First version.                         
+    ******************************************************************************/	
+	private List<String> modulesToStart(String modules)
+	{
+		List<String> ls = new ArrayList<String>();
+		int pos;
+
+		pos = modules.indexOf(",");
+		while ( pos != -1 )
+		{
+			if ( !ls.contains(modules.substring(0, pos)) )
+				ls.add(modules.substring(0, pos));
+			modules = modules.substring(pos+1);
+			pos = modules.indexOf(",");
+		}
+		if ( ! modules.isEmpty() )
+			if ( !ls.contains(modules) )
+				ls.add(modules);
+
+		return ls;
 	}
 }

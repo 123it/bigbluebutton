@@ -105,4 +105,8 @@ public class ParticipantsApplication {
 		log.debug("Setting room manager");
 		roomsManager = r;
 	}
+	
+	public RoomsManager getRoomsManager(){
+		return roomsManager;
+	}
 }

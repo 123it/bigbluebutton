@@ -115,7 +115,6 @@ package org.bigbluebutton.main.model.modules
 			else if(params.command == "stop")/* Stop CHAT or PRESENATION module */
 			{
 				if (params.module == "All")
-					//modulesManager.stopAllModules();
 					modulesManager.stopNotRequiredModules();
 				else
 					modulesManager.stopModule(params.module);

@@ -28,7 +28,10 @@ import org.red5.server.api.Red5;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;import org.bigbluebutton.conference.Participant;
+import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
+import org.bigbluebutton.conference.Participant;
 
 public class ParticipantsService {
 
@@ -74,4 +77,30 @@ public class ParticipantsService {
 		log.debug("Setting Participants Applications");
 		application = a;
 	}
+	
+	/*****************************************************************************
+    ;  getStartedModules
+    ;----------------------------------------------------------------------------
+    ; DESCRIPTION
+    ;   Function to pass the LoadedModules list to the client when the user joins (called by the client) 
+    ;
+    ; RETURNS : List of modules started and stored by RoomsManager in startedModules
+    ;
+    ; INTERFACE NOTES
+    ;   INPUT 
+    ;   
+    ; IMPLEMENTATION
+    ;  
+    ; HISTORY
+    ; __date__ :        PTS:            Description
+    ; MAR-11-2011                        
+    ******************************************************************************/	
+	public List<String> getStartedModules()
+	{
+		String roomName = Red5.getConnectionLocal().getScope().getName();
+		List<String> ls = application.getRoomsManager().getStartedModules(roomName);
+
+		return ls;
+	}
+	
 }

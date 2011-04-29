@@ -48,16 +48,18 @@ public class DynamicConference {
 	String welcome
 	String logoutUrl
 	int maxParticipants
-
+	String startupMode
+	
 	public DynamicConference() {}
 	
-	public DynamicConference(name, meetingID, attendeePW, moderatorPW, maxParticipants) {
+	public DynamicConference(name, meetingID, attendeePW, moderatorPW, maxParticipants, startupMode) {
 		this.setName(name)
 		this.setMeetingID(StringUtils.isEmpty(meetingID) ? "" : meetingID)
 		this.setAttendeePassword(attendeePW == null ? createPassword() : attendeePW)
 		this.setModeratorPassword(moderatorPW == null ? createPassword() : moderatorPW)
 		this.setMaxParticipants(maxParticipants == null || maxParticipants < 0 ? -1 : maxParticipants)
 		this.setMeetingToken(createMeetingToken())
+		this.setStartupMode(startupMode == null || startupMode != "api"? "demo" : startupMode )
 	}
 
 	public static String createMeetingToken() {

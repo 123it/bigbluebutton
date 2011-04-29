@@ -83,11 +83,58 @@ package org.bigbluebutton.main.model.users
 			_participantsSO.client = this;
 			_participantsSO.connect(netConnectionDelegate.connection);
 
-			queryForParticipants();		
+			queryForParticipants();
+			queryForStartedModules();
 			
 			_participants.me.userid = userid;
 		}
 		
+		 /*****************************************************************************
+		 ;  queryForStartedModules
+		 ;----------------------------------------------------------------------------
+		 ; DESCRIPTION
+		 ;   Calls the apps function for receiving the startedModules list when the user joins 
+		 ;   The apps function is invoked using Shared Objects
+		 ; 
+		 ; RETURNS : 
+		 ;
+		 ; INTERFACE NOTES
+		 ;   INPUT 
+		 ;   
+		 ; IMPLEMENTATION
+		 ;  
+		 ; HISTORY
+		 ; __date__ :        PTS:            Description
+		 ; MAR-11-2011                        
+		 ******************************************************************************/	
+		private function queryForStartedModules():void {
+			LogUtil.debug("Retriving startedModules: "); 
+			
+			var nc:NetConnection = connection;
+			nc.call(
+				"participants.getStartedModules",// Remote function name
+				new Responder(
+					// On successful result
+					function(result:Object):void { 
+						LogUtil.debug("queryForStartedModules successfully executed"); 
+						if (result != null) {
+							LogUtil.debug("queryForStartedModules: : the result is " + result.toString() + " to be assigned to ConferenceParameters" );
+							netConnectionDelegate.setStartedModules(result.toString());
+						} else
+							LogUtil.debug("queryForStartedModules: the result is null" ); 
+						
+					},	
+					// status - On error occurred
+					function(status:Object):void { 
+						LogUtil.error("Error occurred:"); 
+						for (var x:Object in status) { 
+							LogUtil.error(x + " : " + status[x]); 
+						} 
+					}
+				)//new Responder
+			); //_netConnection.call
+		}
+
 		private function queryForParticipants():void {
 			var nc:NetConnection = netConnectionDelegate.connection;
 			nc.call(
