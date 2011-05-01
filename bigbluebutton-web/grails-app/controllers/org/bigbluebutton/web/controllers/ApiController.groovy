@@ -77,7 +77,6 @@ class ApiController {
 
 	/* interface (API) methods */
 	def create = {
-
 		log.debug CONTROLLER_NAME + "#create"
 
 		if (!doChecksumSecurity("create")) {
@@ -104,7 +103,7 @@ class ApiController {
 		String logoutUrl = params.logoutURL
 		String startupMode = params.startupMode
 		if (startupMode == null) startupMode = "demo"
-		
+
 		Integer maxParts = -1;
 		try {
 			maxParts = Integer.parseInt(params.maxParticipants);
@@ -328,14 +327,17 @@ class ApiController {
 	{
 	
 		println "Received module Command - " + params.module + "." + params.cmd
+		println "More parameters meetingID = " + params.meetingID
 		
         String returnCode = RESP_CODE_SUCCESS ;
         String msgKey = "sentModuleCommand";
         String msg ;
 		//Check if the conference room is created
 		DynamicConference conf2 = dynamicConferenceService.getConferenceByMeetingID(params.meetingID);
+		println "Debug: Conference room - conf2 = " + conf2
 		//Get the conference room ID
 		Room room2 = dynamicConferenceService.getRoomByMeetingID(params.meetingID);
+		println "Debug: Room - room2 = " + room2
 		
         if ( null == room2 ){
             returnCode = RESP_CODE_FAILED ;
@@ -345,7 +347,6 @@ class ApiController {
             msg = "Module command was sent";
         	conferenceEventListener.moduleCommand(room2.getName() + "\t" + params.module + "\t" + params.cmd);	
         }
-	
 		log.debug CONTROLLER_NAME + "#moduleCmd";
 
 /* NOTE - NNOORI:: NEED TO PUT THE SALT-CHECKSUM BACK FOR THE FINAL RELEASE! 
@@ -642,6 +643,7 @@ class ApiController {
 						}
 						messageKey(msgKey == null ? "" : msgKey)
 						message(msg == null ? "" : msg)
+						startupMode("${conf.startupMode}")
 					}
 				}
 			}
