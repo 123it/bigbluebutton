@@ -31,10 +31,11 @@ public class BigBlueButtonSession {
 	private final Boolean record;
 	private final String externUserID;
 	private final String startupMode;
+	private final String defaultAppletPhone;
 	
 	public BigBlueButtonSession(String sessionName, long userid, String username, 
 				String role, String conference, String mode, String room, String voiceBridge, Boolean record, 
-				String externUserID, String startupMode)
+				String externUserID, String startupMode, String defaultAppletPhone)
 	{
 		this.userid = userid;
 		this.sessionName = sessionName;
@@ -48,6 +49,7 @@ public class BigBlueButtonSession {
 		this.record = record;
 		this.externUserID = externUserID;
 		this.startupMode = startupMode;
+		this.defaultAppletPhone = defaultAppletPhone;
 	}
 
 	public String getUsername() {
@@ -89,4 +91,13 @@ public class BigBlueButtonSession {
 	public String getExternUserID() {
 		return externUserID;
 	}
+
+	public String getStartupMode() {
+		return startupMode;
+	}
+	
+	public String getDefaultAppletPhone() {
+		return defaultAppletPhone;
+	}
+
 }

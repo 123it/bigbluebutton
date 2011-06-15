@@ -55,7 +55,7 @@
 			private var DEFAULT_HELP_URL:String = "http://www.bigbluebutton.org/content/videos";
 			
 			
-			private var _appletPhoneSetting:Boolean = true;
+			private var _appletPhoneSetting:Boolean = true
             private var _confId:String ;
 			
 			
@@ -102,6 +102,9 @@
 			private function loginSuccess(e:SuccessfulLoginEvent):void{
 				loggedIn(e.conferenceParameters.username, e.conferenceParameters.room, e.conferenceParameters.role);
                 _confId = e.conferenceParameters.voicebridge ;
+
+				_appletPhoneSetting = e.conferenceParameters.defaultAppletPhone == null || e.conferenceParameters.defaultAppletPhone != "false"? true : false;
+
 				visible = true;
 			}
 			

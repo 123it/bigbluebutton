@@ -103,6 +103,8 @@ class ApiController {
 		String logoutUrl = params.logoutURL
 		String startupMode = params.startupMode
 		if (startupMode == null) startupMode = "demo"
+		//By now is fixed, need to take the value from bigbluebutton.properties or can be sent as parameter
+		String defaultAppletPhone = "false"
 
 		Integer maxParts = -1;
 		try {
@@ -131,7 +133,7 @@ class ApiController {
 		if (StringUtils.isEmpty(modPW)) {
 			modPW = RandomStringUtils.randomAlphanumeric(8);
 		}
-		DynamicConference conf = new DynamicConference(name, mtgID, attPW, modPW, maxParts, startupMode)
+		DynamicConference conf = new DynamicConference(name, mtgID, attPW, modPW, maxParts, startupMode, defaultAppletPhone)
 		conf.setVoiceBridge(voiceBr == null || voiceBr == "" ? mtgID : voiceBr)
 		
 		if ((dynamicConferenceService.testVoiceBridge != null) && (conf.voiceBridge == dynamicConferenceService.testVoiceBridge)) {
@@ -246,6 +248,7 @@ class ApiController {
 		session["record"] = false
 		session['welcome'] = conf.welcome
 		session["startupMode"] = conf.startupMode
+		session["defaultAppletPhone"] = conf.defaultAppletPhone
 		
 		session.setMaxInactiveInterval(SESSION_TIMEOUT);
 		
@@ -486,6 +489,7 @@ class ApiController {
 	    def meetID = session["meetingID"] 
         def externUID = session["externUserID"] 
         def stpMode = session["startupMode"]
+        def appletPhone = session["defaultAppletPhone"]
         
         println "After reading from cookie"
         
@@ -524,6 +528,7 @@ class ApiController {
 	        				record("$rec")
 	        				welcome("$welcomeMsg")
 	        				startupMode("$stpMode")
+	        				defaultAppletPhone("$appletPhone")
 						}
 					}
 				}
@@ -644,6 +649,7 @@ class ApiController {
 						messageKey(msgKey == null ? "" : msgKey)
 						message(msg == null ? "" : msg)
 						startupMode("${conf.startupMode}")
+						defaultAppletPhone("${conf.defaultAppletPhone}")
 					}
 				}
 			}

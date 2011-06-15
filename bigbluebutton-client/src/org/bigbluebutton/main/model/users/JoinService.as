@@ -70,7 +70,8 @@ package org.bigbluebutton.main.model.users
 										meetingID:xml.meetingID, externUserID:xml.externUserID,
 										role:xml.role, room:xml.room, authToken:xml.room, record:xml.record, 
 										webvoiceconf:xml.webvoiceconf,
-										voicebridge:xml.voicebridge, mode:xml.mode, welcome:xml.welcome, startupMode:xml.startupMode};
+										voicebridge:xml.voicebridge, mode:xml.mode, welcome:xml.welcome, 
+										startupMode:xml.startupMode, defaultAppletPhone:xml.defaultAppletPhone};
 				
 				if (_resultListener != null)
 					_resultListener(true, user);

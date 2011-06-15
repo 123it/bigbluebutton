@@ -182,6 +182,7 @@ package org.bigbluebutton.main.model.modules
 			addAttribute("meetingID", conferenceParameters.meetingID);
 			addAttribute("externUserID", conferenceParameters.externUserID);
 			addAttribute("startupMode", conferenceParameters.startupMode);
+			addAttribute("defaultAppletPhone", conferenceParameters.defaultAppletPhone);
 			
 			addAttribute("protocol", protocol);
 			useProtocol(protocol);

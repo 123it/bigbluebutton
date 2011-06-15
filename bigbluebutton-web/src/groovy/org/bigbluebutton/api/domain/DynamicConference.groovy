@@ -49,10 +49,11 @@ public class DynamicConference {
 	String logoutUrl
 	int maxParticipants
 	String startupMode
+	String defaultAppletPhone
 	
 	public DynamicConference() {}
 	
-	public DynamicConference(name, meetingID, attendeePW, moderatorPW, maxParticipants, startupMode) {
+	public DynamicConference(name, meetingID, attendeePW, moderatorPW, maxParticipants, startupMode, defaultAppletPhone) {
 		this.setName(name)
 		this.setMeetingID(StringUtils.isEmpty(meetingID) ? "" : meetingID)
 		this.setAttendeePassword(attendeePW == null ? createPassword() : attendeePW)
@@ -60,6 +61,7 @@ public class DynamicConference {
 		this.setMaxParticipants(maxParticipants == null || maxParticipants < 0 ? -1 : maxParticipants)
 		this.setMeetingToken(createMeetingToken())
 		this.setStartupMode(startupMode == null || startupMode != "api"? "demo" : startupMode )
+		this.setDefaultAppletPhone(defaultAppletPhone == null || defaultAppletPhone != "false"? "true" : defaultAppletPhone )
 	}
 
 	public static String createMeetingToken() {

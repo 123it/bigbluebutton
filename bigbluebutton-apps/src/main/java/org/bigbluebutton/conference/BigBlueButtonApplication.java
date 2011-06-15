@@ -99,6 +99,7 @@ public class BigBlueButtonApplication extends MultiThreadedApplicationAdapter {
         String conference = ((String)params[2]).toString();
         String mode = ((String) params[3]).toString();
         String startupMode = ((String) params[8]).toString();
+        String defaultAppletPhone = ((String) params[8]).toString();
         /*
          * Convert the id to Long because it gets converted to ascii decimal
          * equivalent (i.e. zero (0) becomes 48) if we don't.
@@ -118,7 +119,7 @@ public class BigBlueButtonApplication extends MultiThreadedApplicationAdapter {
 		}
 		
 		BigBlueButtonSession bbbSession = new BigBlueButtonSession(sessionName, userid,  username, role, 
-				conference, mode, room, voiceBridge, record, externUserID, startupMode);
+				conference, mode, room, voiceBridge, record, externUserID, startupMode, defaultAppletPhone);
         connection.setAttribute(Constants.SESSION, bbbSession);        
         
         String debugInfo = "userid=" + userid + ",username=" + username + ",role=" +  role + ",conference=" + conference + "," + 

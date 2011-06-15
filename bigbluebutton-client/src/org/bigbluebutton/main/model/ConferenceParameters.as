@@ -38,5 +38,6 @@ package org.bigbluebutton.main.model
 		public var userid:Number;
 		public var startedModules:String;
 		public var startupMode:String;
+		public var defaultAppletPhone:String;
 	}
 }
