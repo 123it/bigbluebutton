@@ -55,7 +55,7 @@
 			private var dispatcher:Dispatcher = new Dispatcher();
 			 
 			[Bindable] public var phoneIcon:Class = images.headset_icon;
-			
+
 			/*****************************************************************************
 			 ;  startPhone
 			 ;----------------------------------------------------------------------------
@@ -169,6 +169,15 @@
 			override protected function resourcesChanged():void{
 				this.toolTip = ResourceUtil.getInstance().getString('bbb.toolbar.phone.toolTip');
 			}
+
+			public function set_isUseSipApplet(_set:Boolean):void {
+				_isUseSipApplet = _set;
+			}
+			
+			public function get_isUseSipApplet():Boolean {
+				return _isUseSipApplet;
+			}
+			
 			
 		]]>
 	</mx:Script>

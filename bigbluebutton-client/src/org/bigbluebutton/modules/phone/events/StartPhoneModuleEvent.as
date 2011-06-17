@@ -21,11 +21,14 @@ package org.bigbluebutton.modules.phone.events
 {
 	import flash.events.Event;
 
+	import org.bigbluebutton.main.model.ConferenceParameters;
+
 	public class StartPhoneModuleEvent extends Event
 	{
 		public static const START_PHONE_MODULE_EVENT:String = 'START_PHONE_MODULE_EVENT';
 		
 		public var attributes:Object;
+		public var conferenceParameters:ConferenceParameters;
 		
 		public function StartPhoneModuleEvent(type:String, bubbles:Boolean=true, cancelable:Boolean=false)
 		{

@@ -45,6 +45,7 @@
 			import org.bigbluebutton.modules.chat.services.PublicChatService;
 			import mx.events.FlexEvent;
 			import org.bigbluebutton.modules.phone.events.cPHONE_ConfigSipPhoneEvent;
+			import org.bigbluebutton.main.model.ConferenceParameters;
 			
 		]]>
 	</mx:Script>
@@ -62,7 +63,7 @@
 	
 	<EventHandlers type="{StartPhoneModuleEvent.START_PHONE_MODULE_EVENT}">        
 		<MethodInvoker generator="{PhoneManager}" method="setModuleAttributes" arguments="{event.attributes}" />
-		<MethodInvoker generator="{PhoneEventMapDelegate}" method="addToolbarButton"/>
+		<MethodInvoker generator="{PhoneEventMapDelegate}" method="addToolbarButton" arguments="{event.conferenceParameters}" />
     </EventHandlers>
     
     <EventHandlers type="{StopPhoneModuleEvent.STOP_PHONE_MODULE_EVENT}">       

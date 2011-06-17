@@ -24,7 +24,10 @@ package org.bigbluebutton.modules.phone.maps
 	
 	import flash.events.IEventDispatcher;
 	
+	import org.bigbluebutton.common.LogUtil;
 	import org.bigbluebutton.main.events.ToolbarButtonEvent;
+	import org.bigbluebutton.main.model.ConferenceParameters;
+	import org.bigbluebutton.modules.phone.events.cPHONE_ConfigSipPhoneEvent;
 	import org.bigbluebutton.modules.phone.views.components.ToolbarButton;
 	
 	public class PhoneEventMapDelegate
@@ -39,7 +42,7 @@ package org.bigbluebutton.modules.phone.maps
 			globalDispatcher = new Dispatcher();
 		}
 
-		public function addToolbarButton():void {
+		public function addToolbarButton(params:ConferenceParameters):void {
 		   	phoneButton.toggle = true;
 		   	
 		   	// Use the GLobal Dispatcher so that this message will be heard by the
@@ -48,7 +51,11 @@ package org.bigbluebutton.modules.phone.maps
 			event.button = phoneButton;
 			trace("Dispatching ADD TOOLBAR BUTTON EVENT");
 			globalDispatcher.dispatchEvent(event);
-		   	
+
+			var _isUseSipApplet:Boolean = false; //params.defaultAppletPhone == null || params.defaultAppletPhone != "false"? true : false;
+			phoneButton.set_isUseSipApplet(_isUseSipApplet);
+			LogUtil.debug("ToolbarButton: Initial value for _isUseSipApplet = " + _isUseSipApplet);
+
 		   	buttonOpen = true;
 
 		}

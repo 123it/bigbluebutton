@@ -103,8 +103,9 @@ class ApiController {
 		String logoutUrl = params.logoutURL
 		String startupMode = params.startupMode
 		if (startupMode == null) startupMode = "demo"
-		//By now is fixed, need to take the value from bigbluebutton.properties or can be sent as parameter
-		String defaultAppletPhone = "false"
+		//Received by parameter. Taking the value from bigbluebutton.properties can also be further implemented
+		String defaultAppletPhone = params.defaultAppletPhone
+		if (defaultAppletPhone == null || defaultAppletPhone != "true" ) defaultAppletPhone = "false"
 
 		Integer maxParts = -1;
 		try {
